@@ -2,7 +2,7 @@
 import { FluentProvider, teamsDarkTheme, webDarkTheme, webLightTheme } from '@fluentui/react-components'
 import './App.css'
 import BackgroundImage from './BackgroundImage'
-import { LoadingTextShimmer } from './Loader'
+import { LoadingTextShimmer } from './LoadingTextShimmer'
 
 function App() {
   const widths = [
@@ -30,7 +30,7 @@ function App() {
   return (
     <>
       <BackgroundImage />
-      <FluentProvider theme={webDarkTheme}>
+      <FluentProvider theme={webLightTheme}>
         <div style={{ width: "320px", overflow: "hidden", padding: "0px" }}>
 
           <LoadingTextShimmer lineWidths={widths} />

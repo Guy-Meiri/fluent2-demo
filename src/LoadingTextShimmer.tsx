@@ -24,6 +24,7 @@ const useLoadingTextShimmerStyles = makeStyles({
         ...shorthands.transition("transform", "2s"),
         ...shorthands.borderRadius("0px"),
         zIndex: 4,
+
     }
     ,
     slidingItem: {
@@ -48,7 +49,16 @@ interface LoadingTextShimmerProps {
 export const LoadingTextShimmer = ({ lineWidths }: LoadingTextShimmerProps) => {
     const [numberOfDisplayedLines, setNumberOfDisplayedLines] = useState(0);
     const styles = useLoadingTextShimmerStyles()
-
+    useEffect(() => {
+        const styleEl = document.createElement("style");
+        // Append <style> element to <head>
+        document.head.appendChild(styleEl);
+        // Grab style element's sheet
+        const styleSheet = styleEl.sheet;
+        styleSheet?.insertRule(["background", "blue"], styleSheet.cssRules.length);
+        // document.styleSheet[0].insertRule()
+        // document?.styleSheets?.item(0)?.insertRule(`background: "blue"`)
+    }, []);
     useEffect(() => {
         const delayUntilNextLine = calcDelayUntilNextLine(lineWidths[numberOfDisplayedLines]);
         const timeoutId = setTimeout(() => {

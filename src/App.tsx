@@ -7,10 +7,8 @@ import { LoadingTextShimmer } from './Loader'
 function App() {
   const widths = [
     25,
-    25,
     35,
     0,
-    100,
     100,
     100,
     100,
@@ -19,18 +17,21 @@ function App() {
     100,
     100,
     100,
+    67,
+    0,
+    100,
+    100,
     100,
     67,
     0,
     25,
     35,
-
   ];
   return (
     <>
       <BackgroundImage />
-      <FluentProvider theme={webLightTheme}>
-        <div style={{ width: "500px", overflow: "hidden", padding: "10px" }}>
+      <FluentProvider theme={webDarkTheme}>
+        <div style={{ width: "320px", overflow: "hidden", padding: "0px" }}>
 
           <LoadingTextShimmer lineWidths={widths} />
         </div>

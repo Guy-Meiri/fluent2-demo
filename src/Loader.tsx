@@ -1,13 +1,10 @@
-import { Skeleton, SkeletonItem, SkeletonProps, makeStyles, mergeClasses, shorthands, } from '@fluentui/react-components'
+import { Skeleton, SkeletonItem, makeStyles, mergeClasses, shorthands, tokens} from '@fluentui/react-components'
 import "./Loader.css"
 import { useEffect, useState } from 'react'
 
 const useS = makeStyles({
     container: {
-        animationName: "test",
-        width: "401px",
-        ...shorthands.padding("8px")
-
+        width: "100%",
     },
     itemContainer: {
         position: "relative",
@@ -24,66 +21,42 @@ const useS = makeStyles({
         position: "absolute",
     },
     hidden: {
-
-    }
-    ,
-    slidingItem: {
         width: "100%",
         backgroundColor: "white",
         backgroundImage: "none",
-        transform: "translateY(0%) translateX(100%)",
         ...shorthands.transition("transform", "2s"),
         ...shorthands.borderRadius("0px"),
         zIndex: 4,
+    }
+    ,
+    slidingItem: {
+        transform: "translateY(0%) translateX(100%)",
         animationName: "example",
         animationDuration: "0.5s",
         animationIterationCount: 1,
     },
-    hiddenItem: {
-        width: "100%",
-        backgroundColor: "white",
-        backgroundImage: "none",
-        ...shorthands.transition("transform", "2s"),
-        ...shorthands.borderRadius("0px"),
-        zIndex: 4,
-    },
-    halfWidth: {
-        width: "50%"
-    }
-
-
 })
 
-const widths = [25,
-    25,
-    35,
-    0,
-    100,
-    100,
-    100,
-    100,
-    67,
-    0,
-    100,
-    100,
-    100,
-    100,
-    67,
-    0,
-    25,
-    35,
-
-];
 
 
-export const Loader = (props: Partial<SkeletonProps>) => {
+const delayBetweenLinesMS = 500;
+const minDelayBetweenLinesMS = 10;
+
+const calcDelayUntilNextLine = (lineWidth: number) => {
+    const delayNormalizedByLineWidth = (delayBetweenLinesMS * lineWidth) / 100;
+    return Math.max(delayNormalizedByLineWidth, minDelayBetweenLinesMS)
+}
+interface LoadingTextShimmerProps {
+    lineWidths: number[];
+}
+export const LoadingTextShimmer = ({ lineWidths }: LoadingTextShimmerProps) => {
     const [numberOfDisplayedLines, setNumberOfDisplayedLines] = useState(0);
     const s = useS()
 
     useEffect(() => {
-        const delayUntilNextLine = 500 * ((widths[numberOfDisplayedLines] ? widths[numberOfDisplayedLines] : 10) / 100)
+        const delayUntilNextLine = calcDelayUntilNextLine(lineWidths[numberOfDisplayedLines]);
         const timeoutId = setTimeout(() => {
-            if (numberOfDisplayedLines < widths.length) {
+            if (numberOfDisplayedLines < lineWidths.length) {
                 setNumberOfDisplayedLines(numberOfDisplayedLines + 1);
             }
         }, delayUntilNextLine)
@@ -91,17 +64,16 @@ export const Loader = (props: Partial<SkeletonProps>) => {
         return () => {
             clearTimeout(timeoutId)
         }
-    }, [numberOfDisplayedLines])
+    }, [numberOfDisplayedLines, lineWidths]);
 
     return (
         <div className={s.container}>
             <Skeleton  >
-                {widths.map((width, i) => {
-                    console.log(width)
+                {lineWidths.map((width, i) => {
                     return (
                         <div key={i} className={s.itemContainer} >
                             <SkeletonItem style={{ width: `${width}%` }} className={mergeClasses(s.item, s.height8)} />
-                            <SkeletonItem className={mergeClasses(i > numberOfDisplayedLines ? s.hiddenItem : s.slidingItem, s.height8)} />
+                            <SkeletonItem className={mergeClasses(s.hidden, i <= numberOfDisplayedLines ? s.slidingItem : "", s.height8)} />
                         </div>
                     )
                 })}

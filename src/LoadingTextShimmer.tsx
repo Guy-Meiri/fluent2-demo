@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Skeleton, SkeletonItem, makeStyles, mergeClasses, shorthands, tokens } from '@fluentui/react-components'
-import "./Loader.css"
+// import "./Loader.css"
 
 const useLoadingTextShimmerStyles = makeStyles({
     container: {
@@ -35,8 +35,18 @@ const useLoadingTextShimmerStyles = makeStyles({
     },
 })
 
-const delayBetweenLinesMS = 200;
+const delayBetweenLinesMS = 250;
 const minDelayBetweenLinesMS = 10;
+const keyframeRule = `
+@keyframes example {
+    0% {
+      transform: translate(0%, 0);
+    }
+    100% {
+      transform: translate(100%, 0);
+    }
+  }
+  `;
 
 const calcDelayUntilNextLine = (lineWidth: number) => {
     const delayNormalizedByLineWidth = (delayBetweenLinesMS * lineWidth) / 100;
@@ -50,12 +60,17 @@ export const LoadingTextShimmer = ({ lineWidths }: LoadingTextShimmerProps) => {
     const [numberOfDisplayedLines, setNumberOfDisplayedLines] = useState(0);
     const styles = useLoadingTextShimmerStyles()
     useEffect(() => {
-        const styleEl = document.createElement("style");
-        // Append <style> element to <head>
-        document.head.appendChild(styleEl);
+        // const styleEl = document.createElement("style");
+        // // Append <style> element to <head>
+        // document.head.appendChild(styleEl);
         // Grab style element's sheet
-        const styleSheet = styleEl.sheet;
-        styleSheet?.insertRule(["background", "blue"], styleSheet.cssRules.length);
+        // const styleSheet = styleEl.sheet;
+        const css = window.document.styleSheets[0];
+        css.insertRule(keyframeRule, css?.cssRules.length)
+        // styleSheet?.insertRule("#blanc { background: blue }", 0);
+        // styleSheet?.insertRule(`#blanc {${keyframeRule}}`, 0);
+        // styleSheet?.insertRule(["background", "blue"], styleSheet.cssRules.length);
+        //reference: https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet/insertRule
         // document.styleSheet[0].insertRule()
         // document?.styleSheets?.item(0)?.insertRule(`background: "blue"`)
     }, []);
@@ -74,7 +89,7 @@ export const LoadingTextShimmer = ({ lineWidths }: LoadingTextShimmerProps) => {
 
     return (
         <div className={styles.container}>
-            <Skeleton  >
+            <Skeleton >
                 {lineWidths.map((width, i) => {
                     return (
                         <div key={i} className={styles.itemContainer} >
